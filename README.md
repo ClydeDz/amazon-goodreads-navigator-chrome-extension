@@ -1,0 +1,1 @@
+# amazon-goodreads-navigator-chrome-extension
