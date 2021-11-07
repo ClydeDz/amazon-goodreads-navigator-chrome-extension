@@ -11,7 +11,6 @@ function extractByTerm(searchTerm, rootElement = document) {
     let text;
     for (let i = 0; i < aTags.length; i++) {
         if (aTags[i].textContent.toUpperCase().replace(' ', '').replace(/(\r\n|\n|\r)/gm, '').indexOf(searchTerm) > -1) {
-            console.log("Found text: " + aTags[i].textContent);
             text = aTags[i].textContent.toUpperCase().replace(/(\r\n|\n|\r)/gm, '').replace(searchTerm, '').trim();
             break;
         }
@@ -28,8 +27,6 @@ function findAsinOrIsbnText() {
         if (!found) found = extractByTerm("isbn-13 : ");
         if (!found) found = extractByTerm("asin : ");
     }
-
-    console.log("found: " + found);
     return found;
 }
 
@@ -38,12 +35,11 @@ function wrapperA(){
     let asinText = findAsinOrIsbnText();
     if (asin !== undefined) {
         asin.push(asinText);
-        console.log("Method 1 asin found: " + asin);
     }
 }
 
 
-function getBookIdentifier(asin, isbn10, isbn13){
+function decideBookIdentifierValue(asin, isbn10, isbn13){
     if(asin && !isbn13 && !isbn10){
         return asin;
     }
@@ -59,15 +55,11 @@ function getBookIdentifier(asin, isbn10, isbn13){
     return undefined;
 }
 
-function getAudibleBookIdentifier(){
-    console.log("getAudibleBookIdentifier");
+function getAudibleBookIdentifierValue(){
     var elements = document.querySelectorAll('#audibleproductdetails_feature_div tr#detailsAsin > td > span');
-    return elements[0]?.innerText;
-}
-
-function getMobileAudibleBookIdentifier(){
-    console.log("getMobileAudibleBookIdentifier");
-    var elements = document.querySelectorAll('#audibleProductDetails #detailsAsin > td > span');
+    if(!elements || elements.length == 0) {
+        elements = document.querySelectorAll('#audibleProductDetails #detailsAsin > td > span');
+    }
     return elements[0]?.innerText;
 }
 
@@ -80,7 +72,7 @@ function isAudiblePage() {
 }
 
 
-function addLink(link) {
+function addButtonToDom(link) {
     let div = document.createElement("div");
     div.className = "amazon-goodreads-ext-container";
     
@@ -93,10 +85,10 @@ function addLink(link) {
     div.appendChild(button);
 
     var elements = document.querySelectorAll('#rightCol')[0]
-    || document.querySelectorAll('#CombinedBuybox')[0]
-    || document.querySelectorAll('#imageBlock_feature_div')[0]
-    || document.querySelectorAll('#audibleimageblock_feature_div')[0]
-    || document.querySelectorAll('#imageBlockNew_feature_div')[0];
+        || document.querySelectorAll('#CombinedBuybox')[0]
+        || document.querySelectorAll('#imageBlock_feature_div')[0]
+        || document.querySelectorAll('#audibleimageblock_feature_div')[0]
+        || document.querySelectorAll('#imageBlockNew_feature_div')[0];
 
     //var giftButtonElement = document.querySelectorAll('div#giftButtonStack')[0];
     elements.prepend(div);
@@ -104,17 +96,9 @@ function addLink(link) {
 }
 
 function isDesktop() {
-    let bookDetailsBox = document.getElementById("detailBullets_feature_div");
-    if (bookDetailsBox) {
-        return true;
-    }    
-    
-    let audibleBookDetailsBox = document.getElementById("audibleproductdetails_feature_div");
-    if (audibleBookDetailsBox) {
-        return true;
-    }
-
-    return false;
+    var bookDetailsBox = document.getElementById("detailBullets_feature_div")
+        || document.getElementById("audibleproductdetails_feature_div");
+    return bookDetailsBox ? true: false;
 }
 
 /*
@@ -155,30 +139,31 @@ Kindle      Details: #featureBulletsAndDetailBullets_feature_div .a-list-item .a
 
 
 function isMobile() {
-    let bookDetailsBox = document.getElementById("featureBulletsAndDetailBullets_feature_div");
-    if (bookDetailsBox) {
-        return true;
-    }    
-    
-    let audibleBookDetailsBox = document.getElementById("audibleProductDetails");
-    if (audibleBookDetailsBox) {
-        return true;
-    }
-    
-    return false;
+    var bookDetailsBox = document.getElementById("featureBulletsAndDetailBullets_feature_div")
+        || document.getElementById("audibleProductDetails");
+    return bookDetailsBox ? true: false;
 }
 
+function getDesktopBookIdentifierValue(key) {
+    var domElements = document.querySelectorAll('#detailBullets_feature_div span.a-list-item > span.a-text-bold');
+    if(!domElements || domElements.length == 0){
+        domElements = document.querySelectorAll('#featureBulletsAndDetailBullets_feature_div th.prodDetSectionEntry');   
+    }
+    return getIdentifierValue(key, domElements);
+}
 
-// mobile has a different selectors
-function queryAllDesktop(key){
-    console.log("queryAllDesktop", key);
-    var keyElement;
-    //#audibleproductdetails_feature_div #detailsAsin th.a-color-secondary span
-    var elements = document.querySelectorAll('#detailBullets_feature_div span.a-list-item > span.a-text-bold');
+function innerTextCheck (domElement, key) {
+    return domElement?.innerText.indexOf(`${key}`) > -1;
+}
 
-    for(var i = 0; i < elements.length; i++){
-        if(elements[i]?.innerText.indexOf(`${key}`) > -1){
-            keyElement = elements[i];
+function getIdentifierValue(key, domElements) {
+    if(!domElements) return;
+
+    var keyElement;   
+
+    for(var i = 0; i < domElements.length; i++){
+        if (innerTextCheck(domElements[i], key)) {
+            keyElement = domElements[i];
             break;
         }
     }
@@ -188,44 +173,18 @@ function queryAllDesktop(key){
     return keyElement?.nextElementSibling?.innerText;
 }
 
-function queryAllMobile(key){
-    console.log("queryAllMobile", key);
-    var keyElement;
-    
-    // #featureBulletsAndDetailBullets_feature_div #productDetails_secondary_view_div th.a-span3.prodDetSectionEntry (number in td)
-    // #audibleProductDetails #detailsAsin td OR get from url since product details needs a click 
-    // #featureBulletsAndDetailBullets_feature_div th.prodDetSectionEntry (number in td)
-    // #featureBulletsAndDetailBullets_feature_div .a-list-item .a-text-bold 
-    
-    var elements = document.querySelectorAll('#featureBulletsAndDetailBullets_feature_div span.a-list-item > span.a-text-bold');
-    for(var i = 0; i < elements.length; i++){
-        if(elements[i]?.innerText.indexOf(`${key}`) > -1){
-            keyElement = elements[i];
-            break;
-        }
+function getMobileBookIdentifierValue(key) {
+    var domElements = document.querySelectorAll('#featureBulletsAndDetailBullets_feature_div span.a-list-item > span.a-text-bold');
+    if (!domElements || domElements.length == 0)   {
+        domElements = document.querySelectorAll('#featureBulletsAndDetailBullets_feature_div th.prodDetSectionEntry');
     }
 
-    var value = keyElement?.nextElementSibling?.innerText;
-
-    if(!value) {
-        ///value = document.querySelectorAll('#featureBulletsAndDetailBullets_feature_div th.prodDetSectionEntry')[0]?.nextElementSibling?.innerText;
-
-        elements = document.querySelectorAll('#featureBulletsAndDetailBullets_feature_div th.prodDetSectionEntry');
-        for(var i = 0; i < elements.length; i++){
-            if(elements[i]?.innerText.indexOf(`${key}`) > -1) {
-                keyElement = elements[i];
-                break;
-            }
-        }   
-
-        value = keyElement?.nextElementSibling?.innerText;
-    }
-
-    if(!value) return;
-
-    return value;
+    return getIdentifierValue(key, domElements);
 }
 
+function cleanUpIdentifierValue(value) {
+    return value.replace(/&lrm;|\u200E/gi, '');
+}
 
 function start() {
     // check if mobile or desktop
@@ -236,17 +195,16 @@ function start() {
     var audibleAsin;
 
     if (isDesktop()) {
-        asinValue = queryAllDesktop('ASIN');
-        isbn10Value = queryAllDesktop('ISBN-10');
-        isbn13Value = queryAllDesktop('ISBN-13');
-        audibleAsin = getAudibleBookIdentifier();
+        asinValue = getDesktopBookIdentifierValue('ASIN');
+        isbn10Value = getDesktopBookIdentifierValue('ISBN-10');
+        isbn13Value = getDesktopBookIdentifierValue('ISBN-13');
+        audibleAsin = getAudibleBookIdentifierValue();
     }
     else if (isMobile()) {
-        asinValue = queryAllMobile('ASIN');
-        isbn10Value = queryAllMobile('ISBN-10');
-        isbn13Value = queryAllMobile('ISBN-13');
-        audibleAsin = getMobileAudibleBookIdentifier();
-
+        asinValue = getMobileBookIdentifierValue('ASIN');
+        isbn10Value = getMobileBookIdentifierValue('ISBN-10');
+        isbn13Value = getMobileBookIdentifierValue('ISBN-13');
+        audibleAsin = getAudibleBookIdentifierValue();
     }
     else {
         // Do nothing
@@ -257,12 +215,14 @@ function start() {
         "isbn10Value", isbn10Value, 
         "isbn13Value", isbn13Value,
         "audibleAsin", audibleAsin);
-    var finalIdentifier = getBookIdentifier(asinValue ? asinValue: audibleAsin, isbn10Value, isbn13Value);
+    var identifierValue = decideBookIdentifierValue(asinValue ? asinValue: audibleAsin, isbn10Value, isbn13Value);
 
-    if(!finalIdentifier) return;
+    if(!identifierValue) return;
 
-    console.log("************", `https://www.goodreads.com/book/isbn/${(finalIdentifier).replace(/&lrm;|\u200E/gi, '')}`);
-    addLink(`https://www.goodreads.com/book/isbn/${(finalIdentifier).replace(/&lrm;|\u200E/gi, '')}`);
+    identifierValue = cleanUpIdentifierValue(identifierValue);
+
+    console.log("************", `https://www.goodreads.com/book/isbn/${identifierValue}`);
+    addButtonToDom(`https://www.goodreads.com/book/isbn/${identifierValue}`);
 }
 
 setTimeout(start(), 500);
