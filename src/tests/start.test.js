@@ -1,6 +1,6 @@
 import * as processModule from "../scripts/process";
 import * as utilModule from "../scripts/util";
-import * as indexModule from "../scripts/index";
+import * as startModule from "../scripts/start";
 
 var getBookIdentifierValueSpy = jest.spyOn(processModule, "getBookIdentifierValue")
     .mockImplementation(jest.fn());
@@ -20,7 +20,7 @@ jest.spyOn(global, "setTimeout");
 describe("index --> start", () => {
     beforeEach(() => {
         jest.resetAllMocks();
-        indexModule.settings.waitTime = 0;
+        startModule.settings.waitTime = 0;
     });
 
     test("returns when identifier values are all undefined", () => {
@@ -28,7 +28,7 @@ describe("index --> start", () => {
         getAudibleBookIdentifierValueSpy.mockReturnValue(undefined);
         decideBookIdentifierValueSpy.mockReturnValue(undefined);
 
-        indexModule.start();
+        startModule.start();
 
         expect(cleanUpIdentifierValueSpy).not.toHaveBeenCalled();
         expect(addRedirectButtonToDomSpy).not.toHaveBeenCalled();
@@ -41,7 +41,7 @@ describe("index --> start", () => {
         decideBookIdentifierValueSpy.mockReturnValue(identifierValue);
         cleanUpIdentifierValueSpy.mockReturnValue(identifierValue);
 
-        indexModule.start();
+        startModule.start();
 
         expect(getBookIdentifierValueSpy).toHaveBeenCalledTimes(3);
         expect(decideBookIdentifierValueSpy).toHaveBeenCalledWith(identifierValue, undefined, undefined, undefined);
