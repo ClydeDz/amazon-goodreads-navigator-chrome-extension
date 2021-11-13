@@ -14,10 +14,7 @@ var decideBookIdentifierValueSpy = jest.spyOn(utilModule, "decideBookIdentifierV
 var cleanUpIdentifierValueSpy = jest.spyOn(utilModule, "cleanUpIdentifierValue")
     .mockImplementation(jest.fn());
 
-jest.useFakeTimers();
-jest.spyOn(global, "setTimeout");
-
-describe("index --> start", () => {
+describe("start → start", () => {
     beforeEach(() => {
         jest.resetAllMocks();
         startModule.settings.waitTime = 0;

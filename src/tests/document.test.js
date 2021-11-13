@@ -8,7 +8,7 @@ import {
     prepend
 } from "./mocks/documentMock";
 
-describe("document -> getElement", () => {
+describe("document → getElement", () => {
     beforeEach(() => {
         documentModule.initializeDocument(document);
         jest.resetAllMocks();
@@ -20,7 +20,7 @@ describe("document -> getElement", () => {
     });
 });
 
-describe("document -> getElements", () => {
+describe("document → getElements", () => {
     beforeEach(() => {
         documentModule.initializeDocument(document);
         jest.resetAllMocks();
@@ -63,7 +63,7 @@ describe("document -> getElements", () => {
     });
 });
 
-describe("document -> createButton", () => {
+describe("document → createButton", () => {
     beforeEach(() => {
         documentModule.initializeDocument(document);
         jest.resetAllMocks();
@@ -97,7 +97,7 @@ describe("document -> createButton", () => {
     });
 });
 
-describe("document -> prepend", () => {
+describe("document → prepend", () => {
     beforeEach(() => {
         documentModule.initializeDocument(document);
         jest.resetAllMocks();

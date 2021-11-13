@@ -8,7 +8,7 @@ var createButtonSpy = jest.spyOn(documentModule, "createButton")
 var prependSpy = jest.spyOn(documentModule, "prepend")
     .mockImplementation(jest.fn());
 
-describe("process -> getAudibleBookIdentifierValue", () => {
+describe("process → getAudibleBookIdentifierValue", () => {
     beforeEach(() => {
         jest.resetAllMocks();
     });
@@ -46,7 +46,7 @@ describe("process -> getAudibleBookIdentifierValue", () => {
     });
 });
 
-describe("process -> addRedirectButtonToDom", () => {
+describe("process → addRedirectButtonToDom", () => {
     beforeEach(() => {
         jest.resetAllMocks();
     });

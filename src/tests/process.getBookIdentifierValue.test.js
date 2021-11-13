@@ -22,7 +22,7 @@ var desktopMockElement = [{
     example: "",
 }];
 
-describe("process -> getBookIdentifierValue", () => {
+describe("process → getBookIdentifierValue", () => {
     beforeEach(() => {
         jest.resetAllMocks();
     });

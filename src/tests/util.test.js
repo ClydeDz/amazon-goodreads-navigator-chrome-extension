@@ -1,6 +1,6 @@
 import * as utilModule from "../scripts/util";
 
-describe("util -> cleanUpIdentifierValue", () => {
+describe("util → cleanUpIdentifierValue", () => {
     beforeEach(() => {
     }); 
 
@@ -14,7 +14,7 @@ describe("util -> cleanUpIdentifierValue", () => {
     });
 });
 
-describe("util -> innerTextCheck", () => {
+describe("util → innerTextCheck", () => {
     beforeEach(() => {
     }); 
 
@@ -48,7 +48,7 @@ describe("util -> innerTextCheck", () => {
     });
 });
 
-describe("util -> decideBookIdentifierValue", () => {
+describe("util → decideBookIdentifierValue", () => {
     beforeEach(() => {
     }); 
 
