@@ -1,11 +1,6 @@
 import * as documentModule from "./document";
 import * as utilModule from "./util";
 
-function getBookIdentifierFromUrl(url){
-    const regex = /(dp\/(\w*\d*)*)/g;
-    return url.match(regex)[0];
-}
-
 function getIdentifierValue(key, domElements) {
     if(!domElements) return;
 
