@@ -14,9 +14,9 @@ export var settings = {
 };
 
 export function start() {
-    settings.asinValue = processModule.getBookIdentifierValue('ASIN');
-    settings.isbn10Value = processModule.getBookIdentifierValue('ISBN-10');
-    settings.isbn13Value = processModule.getBookIdentifierValue('ISBN-13');
+    settings.asinValue = processModule.getBookIdentifierValue(settings.asin);
+    settings.isbn10Value = processModule.getBookIdentifierValue(settings.isbn10);
+    settings.isbn13Value = processModule.getBookIdentifierValue(settings.isbn13);
     settings.audibleAsin = processModule.getAudibleBookIdentifierValue();
 
     var identifierValue = utilModule.decideBookIdentifierValue(
