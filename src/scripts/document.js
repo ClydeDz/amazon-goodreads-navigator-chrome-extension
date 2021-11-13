@@ -14,6 +14,8 @@ export function getElements(selector) {
 }
 
 export function createButton(redirectLink) {
+  if(!redirectLink) return;
+
   var div = doc.createElement("div");
   div.className = "amazon-goodreads-ext-container";
   

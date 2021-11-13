@@ -23,17 +23,26 @@ function getIdentifierValue(key, domElements) {
     return keyElement?.nextElementSibling?.innerText;
 }
 
-export function getDesktopBookIdentifierValue(key) {
+function getDesktopBookIdentifierValue(key) {
     var domElements = documentModule.getElements('#detailBullets_feature_div span.a-list-item > span.a-text-bold')
         || documentModule.getElements('#featureBulletsAndDetailBullets_feature_div th.prodDetSectionEntry');   
     return getIdentifierValue(key, domElements);
 }
 
-export function getMobileBookIdentifierValue(key) {
+function getMobileBookIdentifierValue(key) {
     var domElements = documentModule.getElements('#featureBulletsAndDetailBullets_feature_div span.a-list-item > span.a-text-bold')
         || documentModule.getElements('#featureBulletsAndDetailBullets_feature_div th.prodDetSectionEntry');
-
     return getIdentifierValue(key, domElements);
+}
+
+function isDesktop() {
+    var bookDetailsBox = documentModule.getElement("detailBullets_feature_div")
+        || documentModule.getElement("audibleproductdetails_feature_div");
+    return bookDetailsBox ? true: false;
+}
+
+export function getBookIdentifierValue(key) {
+    return isDesktop() ? getDesktopBookIdentifierValue(key) : getMobileBookIdentifierValue(key);
 }
 
 export function getAudibleBookIdentifierValue(){
@@ -43,27 +52,18 @@ export function getAudibleBookIdentifierValue(){
     return elements[0]?.innerText;
 }
 
-export function isDesktop() {
-    var bookDetailsBox = documentModule.getElement("detailBullets_feature_div")
-        || documentModule.getElement("audibleproductdetails_feature_div");
-    return bookDetailsBox ? true: false;
-}
-
-export function isMobile() {
-    var bookDetailsBox = documentModule.getElement("featureBulletsAndDetailBullets_feature_div")
-        || documentModule.getElement("audibleProductDetails");
-    return bookDetailsBox ? true: false;
-}
-
-export function addButtonToDom(link) {
+export function addRedirectButtonToDom(link) {
     var button = documentModule.createButton(link);
 
-    var domElement = document.querySelectorAll('#rightCol')[0]
-        || document.querySelectorAll('#CombinedBuybox')[0]
-        || document.querySelectorAll('#imageBlock_feature_div')[0]
-        || document.querySelectorAll('#audibleimageblock_feature_div')[0]
-        || document.querySelectorAll('#imageBlockNew_feature_div')[0];
-    
-    documentModule.prepend(domElement, button);
-}
+    if(!button) return;
 
+    var domElement = documentModule.getElements('#rightCol')
+        || documentModule.getElements('#CombinedBuybox')
+        || documentModule.getElements('#imageBlock_feature_div')
+        || documentModule.getElements('#audibleimageblock_feature_div')
+        || documentModule.getElements('#imageBlockNew_feature_div');
+    
+    if(!domElement) return;
+
+    documentModule.prepend(domElement[0], button);
+}

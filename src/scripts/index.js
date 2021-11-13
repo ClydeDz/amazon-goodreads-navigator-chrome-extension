@@ -13,45 +13,31 @@ export var settings = {
     waitTime: 500
 };
 
-export function start() {    
-    if (processModule.isDesktop()) {
-        settings.asinValue = processModule.getDesktopBookIdentifierValue('ASIN');
-        settings.isbn10Value = processModule.getDesktopBookIdentifierValue('ISBN-10');
-        settings.isbn13Value = processModule.getDesktopBookIdentifierValue('ISBN-13');
-        settings.audibleAsin = processModule.getAudibleBookIdentifierValue();
-    }
-    else if (processModule.isMobile()) {
-        settings.asinValue = processModule.getMobileBookIdentifierValue('ASIN');
-        settings.isbn10Value = processModule.getMobileBookIdentifierValue('ISBN-10');
-        settings.isbn13Value = processModule.getMobileBookIdentifierValue('ISBN-13');
-        settings.audibleAsin = processModule.getAudibleBookIdentifierValue();
-    }
-    else {
-        // Do nothing
-    }
-
-    console.log(
-        "asinValue", settings.asinValue, 
-        "isbn10Value", settings.isbn10Value, 
-        "isbn13Value", settings.isbn13Value,
-        "audibleAsin", settings.audibleAsin
-    );
+export function start() {
+    settings.asinValue = processModule.getBookIdentifierValue('ASIN');
+    settings.isbn10Value = processModule.getBookIdentifierValue('ISBN-10');
+    settings.isbn13Value = processModule.getBookIdentifierValue('ISBN-13');
+    settings.audibleAsin = processModule.getAudibleBookIdentifierValue();
 
     var identifierValue = utilModule.decideBookIdentifierValue(
         settings.asinValue,
         settings.audibleAsin,
         settings.isbn10Value, 
         settings.isbn13Value);
-
+        
     if(!identifierValue) return;
 
     identifierValue = utilModule.cleanUpIdentifierValue(identifierValue);
 
-    console.log("************", `https://www.goodreads.com/book/isbn/${identifierValue}`);
-    processModule.addButtonToDom(`https://www.goodreads.com/book/isbn/${identifierValue}`);
+    processModule.addRedirectButtonToDom(`https://www.goodreads.com/book/isbn/${identifierValue}`);
 }
 
-setTimeout(function() {
-    documentModule.initializeDocument(document);
-    start();
+var execute = setTimeout(function() {
+    try {
+        documentModule.initializeDocument(document);
+        start();
+    } catch(e) {
+        console.error(e);
+        clearTimeout(execute);
+    }
 }, settings.waitTime);

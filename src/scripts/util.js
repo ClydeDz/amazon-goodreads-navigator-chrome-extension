@@ -21,6 +21,6 @@ export function cleanUpIdentifierValue(value) {
 }
 
 export function innerTextCheck (domElement, key) {
-    return domElement?.innerText.indexOf(`${key}`) > -1;
+    return domElement?.innerText?.indexOf(`${key}`) > -1;
 }
 
