@@ -23,7 +23,7 @@ export function createButton(redirectLink) {
   button.onclick = function() {
       window.open(redirectLink, "_blank");
   };
-  button.innerText= "View on Goodreads";
+  button.innerText= "View in Goodreads";
   button.className = "amazon-goodreads-ext-button amazon-goodreads-ext-mobile";   
   
   div.appendChild(button);
