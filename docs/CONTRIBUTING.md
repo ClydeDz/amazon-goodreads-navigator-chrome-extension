@@ -8,7 +8,7 @@ Please open an issue to discuss new ideas or features before going away and deve
 - Clone this repo and install the required node modules.
 - Run `npm run build` to build this project. 
 - Follow [these instructions](https://superuser.com/a/247654) to install this extension locally. Use the generated `dist` folder as the folder containing the extensions code to load.
-- Once installed, you should see a View in Goodreads button on any Amazon book page.
+- Once installed, you should see a 'View in Goodreads' button on any Amazon book page.
 
 ## Merging your changes in
 In other words, the pull request process. When you're ready with your changes, open up a pull request to get your changes merged in. Follow the checklist below to ensure you've covered the requirements. 
