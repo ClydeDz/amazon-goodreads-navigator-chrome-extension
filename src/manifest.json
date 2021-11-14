@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Amazon to Goodreads Navigator",
-    "description": "Adds a 'View in Goodreads' button on Amazon book pages to easily navigate between both sites.",
+    "description": "Adds a 1-click 'View in Goodreads' button on Amazon book pages to easily navigate from Amazon to Goodreads when clicked.",
     "version": "0.0.9",
     "author": "Clyde D'Souza",
     "homepage_url": "https://github.com/ClydeDz/amazon-goodreads-navigator-chrome-extension",
